@@ -1,5 +1,3 @@
-import React from "react";
-
 function NavBar() {
   return (
     <nav className="flex justify-between bg-[#F1F1F1] py-2">

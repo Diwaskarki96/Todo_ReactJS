@@ -1,4 +1,3 @@
-import React from "react";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -8,8 +7,15 @@ function App() {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([]);
 
-  const handleEdit = () => {};
-  const handleDelete = () => {};
+  const handleEdit = () => {
+    // todos.filter((item) => item.id);
+    // setTodo();
+    // let t= todos.filter(i)
+  };
+  const handleDelete = (id) => {
+    setTodos(todos.filter((item) => item.id !== id));
+  };
+
   const handleAdd = () => {
     setTodos([...todos, { id: uuidv4(), todo, isCompleted: false }]);
     setTodo("");
@@ -19,9 +25,13 @@ function App() {
   };
   const handleCheckbox = (id) => {
     setTodos(
-      todos.map((item) =>
-        item.id === id ? { ...item, isCompleted: !item.isCompleted } : item
-      )
+      todos.map((item) => {
+        if (item.id === id) {
+          return { ...item, isCompleted: !item.isCompleted };
+        } else {
+          return item;
+        }
+      })
     );
   };
 
@@ -46,17 +56,24 @@ function App() {
         </div>
         <h1 className="mx-5 font-bold text-2xl"> Your Todos</h1>
         <div className="todos ">
+          {todos.length === 0 && (
+            <div className="text-red-600 ml-9">No Todos</div>
+          )}
           {todos.map((item) => {
             return (
-              <div key={item} className="todo flex my-3 justify-between w-1/4">
-                <input
-                  onChange={() => handleCheckbox(item.id)}
-                  type="checkbox"
-                  checked={item.isCompleted}
-                />
-
-                <div className={item.isCompleted ? "line-through" : ""}>
-                  {item.todo}
+              <div
+                key={item.id}
+                className="todo flex my-3 justify-between w-1/4"
+              >
+                <div className="flex gap-5">
+                  <input
+                    onChange={() => handleCheckbox(item.id)}
+                    type="checkbox"
+                    checked={item.isCompleted}
+                  />
+                  <div className={item.isCompleted ? "line-through" : ""}>
+                    {item.todo}
+                  </div>
                 </div>
                 <div className="button">
                   <button
@@ -66,7 +83,7 @@ function App() {
                     Edit
                   </button>
                   <button
-                    onClick={handleDelete}
+                    onClick={() => handleDelete(item.id)}
                     className="bg-violet-800 text-white p-2 py-1 mx-1 font-bold text-sm rounded-md hover:bg-violet-900"
                   >
                     Delete
