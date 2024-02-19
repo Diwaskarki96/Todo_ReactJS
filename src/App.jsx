@@ -80,6 +80,7 @@ function App() {
           type="checkbox"
           onChange={toggleFinished}
           checked={showFinished}
+          className="mx-1"
         />
         Show Finished
         <h1 className="mx-5 font-bold text-2xl"> Your Todos</h1>
