@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import NavBar from "./components/NavBar";
@@ -7,18 +7,33 @@ function App() {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([]);
 
+  useEffect(() => {
+    let todoString = localStorage.getItem("todos");
+    if (todoString) {
+      let todos = JSON.parse(localStorage.getItem("todos"));
+      setTodos(todos);
+    }
+  }, []);
+
+  const saveToLS = () => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  };
+
   const handleEdit = (e, id) => {
     let todoEdit = todos.filter((item) => item.id === id);
     setTodo(todoEdit[0].todo);
     setTodos(todos.filter((item) => item.id !== id));
+    saveToLS();
   };
   const handleDelete = (id) => {
     setTodos(todos.filter((item) => item.id !== id));
+    saveToLS();
   };
 
   const handleAdd = () => {
     setTodos([...todos, { id: uuidv4(), todo, isCompleted: false }]);
     setTodo("");
+    saveToLS();
   };
   const handleChange = (e) => {
     setTodo(e.target.value);
@@ -33,6 +48,7 @@ function App() {
         }
       })
     );
+    saveToLS();
   };
 
   return (
@@ -75,7 +91,7 @@ function App() {
                     {item.todo}
                   </div>
                 </div>
-                <div className="button">
+                <div className="button flex h-full ">
                   <button
                     onClick={(e) => {
                       handleEdit(e, item.id);
