@@ -6,6 +6,7 @@ import NavBar from "./components/NavBar";
 function App() {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([]);
+  const [showFinished, setshowFinished] = useState(false);
 
   useEffect(() => {
     let todoString = localStorage.getItem("todos");
@@ -17,6 +18,10 @@ function App() {
 
   const saveToLS = () => {
     localStorage.setItem("todos", JSON.stringify(todos));
+  };
+
+  const toggleFinished = () => {
+    setshowFinished(!showFinished);
   };
 
   const handleEdit = (e, id) => {
@@ -65,11 +70,18 @@ function App() {
           />
           <button
             onClick={handleAdd}
-            className="bg-violet-800 text-white p-2 py-1 mx-1 font-bold text-sm rounded-md hover:bg-violet-900"
+            disabled={todo.length <= 0}
+            className="bg-violet-800 text-white p-2 py-1 mx-1 font-bold text-sm rounded-md hover:bg-violet-900 disabled:bg-violet-900"
           >
             Add
           </button>
         </div>
+        <input
+          type="checkbox"
+          onChange={toggleFinished}
+          checked={showFinished}
+        />
+        Show Finished
         <h1 className="mx-5 font-bold text-2xl"> Your Todos</h1>
         <div className="todos ">
           {todos.length === 0 && (
@@ -77,37 +89,39 @@ function App() {
           )}
           {todos.map((item) => {
             return (
-              <div
-                key={item.id}
-                className="todo flex my-3 justify-between w-1/4"
-              >
-                <div className="flex gap-5">
-                  <input
-                    onChange={() => handleCheckbox(item.id)}
-                    type="checkbox"
-                    checked={item.isCompleted}
-                  />
-                  <div className={item.isCompleted ? "line-through" : ""}>
-                    {item.todo}
+              (showFinished || !item.isCompleted) && (
+                <div
+                  key={item.id}
+                  className="todo flex my-3 justify-between w-1/4"
+                >
+                  <div className="flex gap-5">
+                    <input
+                      onChange={() => handleCheckbox(item.id)}
+                      type="checkbox"
+                      checked={item.isCompleted}
+                    />
+                    <div className={item.isCompleted ? "line-through" : ""}>
+                      {item.todo}
+                    </div>
+                  </div>
+                  <div className="button flex h-full ">
+                    <button
+                      onClick={(e) => {
+                        handleEdit(e, item.id);
+                      }}
+                      className="bg-violet-800 text-white p-2 py-1 mx-1 font-bold text-sm rounded-md hover:bg-violet-900"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="bg-violet-800 text-white p-2 py-1 mx-1 font-bold text-sm rounded-md hover:bg-violet-900"
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
-                <div className="button flex h-full ">
-                  <button
-                    onClick={(e) => {
-                      handleEdit(e, item.id);
-                    }}
-                    className="bg-violet-800 text-white p-2 py-1 mx-1 font-bold text-sm rounded-md hover:bg-violet-900"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="bg-violet-800 text-white p-2 py-1 mx-1 font-bold text-sm rounded-md hover:bg-violet-900"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
+              )
             );
           })}
         </div>
