@@ -60,7 +60,7 @@ function App() {
     <>
       <NavBar />
       <div className="container mx-auto my-5 rounded-xl text-black p-5  bg-violet-100 min-h-[80vh]">
-        <div className="addtodo my-5">
+        <div className="addtodo my-5 font-bold">
           <h2>Add a Todo</h2>
           <input
             onChange={handleChange}
